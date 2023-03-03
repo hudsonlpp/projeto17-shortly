@@ -28,7 +28,8 @@ CREATE TABLE public.sessions (
     id integer NOT NULL,
     token text NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    "userId" integer NOT NULL
+    "userId" integer NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -95,7 +96,7 @@ CREATE TABLE public.users (
     email text NOT NULL,
     password text NOT NULL,
     name text NOT NULL,
-    "createAt" timestamp without time zone DEFAULT now() NOT NULL
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -144,7 +145,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.sessions VALUES (1, '59a1afe8-e366-47a6-98c9-13077083f0b3', true, 2);
 
 
 --
@@ -157,15 +157,13 @@ INSERT INTO public.sessions VALUES (1, '59a1afe8-e366-47a6-98c9-13077083f0b3', t
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.users VALUES (1, 'mario@driven.com.br', '$2b$10$nne9mHiRK9n0YsXgZoSWKO.lyFOmOa0qJJQTmycEtR0yXsbOkXy/y', 'mario', '2023-03-03 13:47:08.215238');
-INSERT INTO public.users VALUES (2, 'joao@driven.com.br', '$2b$10$8JRBy5lZrws6PapYbtYmfevA/NtgKKQ68e49zbsdHOBdrfmPzprBW', 'João', '2023-03-03 13:48:01.182732');
 
 
 --
 -- Name: sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.sessions_id_seq', 1, true);
+SELECT pg_catalog.setval('public.sessions_id_seq', 1, false);
 
 
 --
@@ -179,7 +177,7 @@ SELECT pg_catalog.setval('public.shortens_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 2, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
