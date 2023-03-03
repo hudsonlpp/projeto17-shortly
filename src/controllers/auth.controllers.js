@@ -21,7 +21,7 @@ export async function signin(req, res) {
                 `,
                 [token, user.id]
             );
-            return res.send(token)
+            return res.send({token})
         }
         return res.sendStatus(401)
     } catch(err) {

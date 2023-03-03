@@ -45,14 +45,17 @@ export async function openShortUrl(req, res){
     const { shortUrl } = req.params;
     try{
         const { rows } = await db.query(
-            `SELECT * FROM shortens WHERE "shortUrl"=$1`,
+            `SELECT * FROM shortens WHERE "shortUrl" = $1`,
             [shortUrl]
         );
         if(rows.length === 0 ) return res.sendStatus(404);
         const [url] = rows;
+        let views = rows.visitCount;
+        views++;
         await db.query(
-            `UPDATE shortens SET views = views + 1 WHERE id = $1`
-            [url.id]
+            `UPDATE shortens SET "visitCount" = "visitCount" +1 WHERE "shortUrl" = $1
+            RETURNING url;`,
+            [shortUrl]
         );
         res.redirect(url.url);
     } catch(err) {
