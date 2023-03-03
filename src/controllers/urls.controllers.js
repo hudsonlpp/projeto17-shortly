@@ -9,10 +9,10 @@ export async function shortenUrl(req, res){
     try{
         await db.query(
             `
-            INSERT INTO shortens(url, "shortUrl", "userId")
+            INSERT INTO shortens (url, "shortUrl", "userId")
             VALUES ($1, $2, $3)
             `,
-            [URL, shortUrl, id]
+            [url, shortUrl, id]
         );
 
         res.status(201).send({shortUrl})

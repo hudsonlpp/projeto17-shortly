@@ -11,8 +11,20 @@ export async function signin(req, res) {
             [email]
         );
         const [user] = rows;
-        res.send(token);
+        if (!user) return res.sendStatus(401);
+        if(bcrypt.compareSync(password, user.password)){
+            const token = uuid();
+            await db.query(
+                `
+                INSERT INTO sessions (token, "userId")
+                VALUES ($1, $2)
+                `,
+                [token, user.id]
+            );
+            return res.send(token)
+        }
+        return res.sendStatus(401)
     } catch(err) {
-        res.status(500).sen(err.message);
+        res.status(500).send(err.message);
     }
 }

@@ -7,12 +7,12 @@ export async function authValidation(req, res, next) {
     if(!token) return res.sendStatus(401);
 
     try{
-        const { rows } = await db.query(
+        const { rows:sessions } = await db.query(
             'SELECT * FROM sessions WHERE token = $1',
             [token]
         );
     
-        const [session] = rows;
+        const [session] = sessions;
         if (!session) return res.sendStatus(401);
 
         const {rows: users } = await db.query(
@@ -20,6 +20,8 @@ export async function authValidation(req, res, next) {
             [session.userId]
         );
         const [user] = users;
+        if(!user) return res.sendStatus(401)
+        res.locals.user = user;
         next();
     } catch (err) {
         res.status(500).send(err.message);

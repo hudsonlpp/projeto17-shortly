@@ -6,10 +6,11 @@ import bcrypt from "bcrypt";
 import { v4 as uuidV4 } from 'uuid';
 import router from "./routes/index.routes.js";
 
-const app = express();
 dotenv.config();
-app.use(cors());
+
+const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(router);
 
 // ROTAS:
