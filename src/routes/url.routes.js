@@ -6,7 +6,7 @@ import urlSchema from "../models/urlSchema.js";
 
 const router = Router();
 
-router.post("/urls/shorten", authValidation, shortenUrl, validateSchema(urlSchema));
+router.post("/urls/shorten", validateSchema(urlSchema), authValidation, shortenUrl);
 router.get("urls/:id", getUrlById);
 router.get("urls/open/:shortUrl", openShortUrl);
 router.delete("/urls/:id", authValidation, deleteUrl);

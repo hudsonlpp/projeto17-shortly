@@ -60,7 +60,7 @@ ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 CREATE TABLE public.shortens (
     id integer NOT NULL,
     url text NOT NULL,
-    "shorUrl" text NOT NULL,
+    "shortUrl" text NOT NULL,
     "userId" integer NOT NULL,
     "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
     views integer DEFAULT 0 NOT NULL
