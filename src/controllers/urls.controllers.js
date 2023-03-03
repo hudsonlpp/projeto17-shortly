@@ -17,6 +17,69 @@ export async function shortenUrl(req, res){
 
         res.status(201).send({shortUrl})
     }   catch (err) {
-        res.status(500).send(err.mensage)
+        res.status(500).send(err.message)
+    }
+}
+
+export async function getUrlById(req, res){
+    const { id } = res.params;
+    try{
+        const { rows } = await db.query(
+            'SELECT * FROM shortens WHERE id = $1',
+            [id]
+        );
+        if(rows.length == 0) return res.sendStatus(404);
+        const [url] = rows;
+        const newUrl = {
+            id: url.id,
+            shortUrl: url.shortUrl,
+            url: url.url,
+        };
+        res.send(newUrl);
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+export async function openShortUrl(req, res){
+    const { shortUrl } = req.params;
+    try{
+        const { rows } = await db.query(
+            `SELECT * FROM shortens WHERE "shortUrl"=$1`,
+            [shortUrl]
+        );
+        if(rows.length === 0 ) return res.sendStatus(404);
+        const [url] = rows;
+        await db.query(
+            `UPDATE shortens SET views = views + 1 WHERE id = $1`
+            [url.id]
+        );
+        res.redirect(url.url);
+    } catch(err) {
+        res.status(500).send(err.message)
+    }
+}
+
+export async function deleteUrl(req, res){
+    const { id } = req.params;
+    const { user } = res.locals.user;
+    try{
+        const result = await db.query(
+            `
+            SELECT * FROM shortens WHERE id = $1
+            `,
+            [id]
+        );
+        if(result.rowCount == 0) return res.sendStatus(404);
+        const [url] = result.rows;
+        if(url.userId != user.id) return res.sendStatus(401);
+        await db.query(
+            `
+            DELETE FROM shortens WHERE id=$1
+            `, [id]
+            );
+        res.sendStatus(204);
+    } catch (err) {
+        return res.status(500).send(err.message)
     }
 }
