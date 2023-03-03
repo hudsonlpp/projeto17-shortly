@@ -7,22 +7,22 @@ export async function shortenUrl(req, res){
     const shortUrl = nanoid(8);
 
     try{
-        await db.query(
+        const {rows} = await db.query(
             `
             INSERT INTO shortens(url, "shortUrl", "userId")
-            VALUES ($1, $2, $3)
+            VALUES ($1, $2, $3) RETURNING id
             `,
-            [URL, shortUrl, id]
+            [url, shortUrl, id]
         );
 
-        res.status(201).send({shortUrl})
+        res.status(201).send({id: rows[0].id, shortUrl})
     }   catch (err) {
         res.status(500).send(err.message)
     }
 }
 
 export async function getUrlById(req, res){
-    const { id } = res.params;
+    const { id } = req.params;
     try{
         const { rows } = await db.query(
             'SELECT * FROM shortens WHERE id = $1',
